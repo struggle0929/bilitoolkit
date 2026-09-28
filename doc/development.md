@@ -80,7 +80,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\start-windows.
 npm run dev
 ```
 
-开发版需要保持终端窗口打开。应用内的在线更新只适用于正式安装版；开发版请用 Git 更新源码并重新构建。
+通过 `start-windows.cmd` 启动时，开发服务在隐藏窗口中运行，日志写入 `.bilitoolkit-setup-logs/development.log`；直接执行 `npm run dev` 时仍会在当前终端显示日志。应用内的在线更新只适用于正式安装版；开发版请用 Git 更新源码并重新构建。
 
 ### 打包
 

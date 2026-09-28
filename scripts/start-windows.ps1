@@ -65,6 +65,17 @@ function Get-SavedLockHash {
   return ''
 }
 
+function Get-LockHash {
+  $stream = [System.IO.File]::OpenRead($lockfile)
+  $sha256 = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    return ([System.BitConverter]::ToString($sha256.ComputeHash($stream))).Replace('-', '')
+  } finally {
+    $sha256.Dispose()
+    $stream.Dispose()
+  }
+}
+
 function Save-SetupState {
   Set-Content -LiteralPath $receipt -Value $currentLockHash -Encoding ASCII
   Set-Content -LiteralPath $marker -Value $currentLockHash -Encoding ASCII
@@ -76,7 +87,7 @@ function Start-DevelopmentApp {
     return
   }
   $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $devScript + '"'
-  Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WorkingDirectory $projectRoot -WindowStyle Normal -ErrorAction Stop
+  Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -WorkingDirectory $projectRoot -WindowStyle Hidden -ErrorAction Stop
 }
 
 function Set-DownloadSource([bool]$useMirror) {
@@ -157,7 +168,7 @@ try {
   }
   & node.exe -e "const v=process.versions.node.split('.').map(Number);process.exit((v[0]===20&&v[1]>=19)||(v[0]===22&&v[1]>=12)||v[0]>22?0:1)"
   if ($LASTEXITCODE -ne 0) { throw "需要 Node.js 20.19+ 或 22.12+。当前版本：$(& node.exe --version)" }
-  $currentLockHash = (Get-FileHash -LiteralPath $lockfile -Algorithm SHA256).Hash
+  $currentLockHash = Get-LockHash
   $dependenciesReady = Test-DependenciesReady
   $savedLockHash = Get-SavedLockHash
   $reuseDependencies = $dependenciesReady -and ($savedLockHash -eq $currentLockHash)
