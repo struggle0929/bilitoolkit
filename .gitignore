@@ -42,3 +42,4 @@ plugins
 plugin-icons
 /release/
 .bilitoolkit-setup-complete
+.bilitoolkit-setup-logs/
