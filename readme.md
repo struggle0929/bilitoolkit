@@ -2,6 +2,18 @@
 
 一款面向 B 站用户的开源工具箱，支持在线安装和卸载插件，可登录多个账号并按需选择账号执行插件。
 
+## Windows 安装与启动
+
+**普通用户请下载安装包，不需要下载源码、安装 Node.js 或修改 `package.json`。**
+
+1. 打开 [GitHub Releases](https://github.com/hzhilong/bilitoolkit/releases/latest)，下载 `BiliToolkit_版本号.exe`（不要选页面下方的 `Source code` 压缩包）。
+2. 双击安装包完成安装，然后从桌面或开始菜单的“哔哩工具姬”快捷方式启动。
+3. 在应用的“关于”页点击“检测版本更新”。检测到新版本后，等待下载完成并选择“立即安装”。“设置”页也可开启启动时自动更新。
+
+在线更新依赖作者在 GitHub Releases 同时发布安装包和 `latest.yml`。从源码启动的开发版不能通过此功能更新；请重新下载源码或使用 Git 更新后再次启动。
+
+GitHub 的 `Code → Download ZIP` 得到的是**源码**，其中没有可直接运行的应用程序。如果要从源码压缩包启动，请先安装符合项目要求的 [Node.js](https://nodejs.org/)（`^20.19.0` 或 `>=22.12.0`），解压后双击根目录的 `start-windows.cmd`。首次运行会出现安装进度窗口，显示依赖安装、构建和本机模块准备三个阶段及最新日志；下载无法准确换算成百分比。成功后自动启动开发版，下一次双击不会重复安装。开发版运行时需要保持命令窗口打开。开发者的详细步骤见[开发文档](doc/development.md)。
+
 ## 技术栈
 
 `Vue 3` + `Electron` + `TypeScript` + `Element Plus`

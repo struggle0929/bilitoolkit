@@ -7,9 +7,10 @@ import { useAppSettingsStore } from '@/renderer/stores/app-settings.js'
 import { DevToolsType } from '@/shared/types/app-settings.js'
 import PageContainer from '@/renderer/components/layout/PageContainer.vue'
 import TestPluginDialog from '@/renderer/components/plugin/TestPluginDialog.vue'
-import { SettingGroup, SettingItem, loadingDialog } from 'bilitoolkit-ui'
+import { SettingGroup, SettingItem } from 'bilitoolkit-ui'
 import { getErrorMessage } from '@ybgnb/utils'
 import { clearPluginIconCache } from '@/renderer/services/plugin-icon-service'
+import { checkAppUpdate } from '@/renderer/services/app-update'
 
 const appSettings = useAppSettingsStore().appSettings
 
@@ -33,18 +34,6 @@ const testPluginDialogVisible = ref<boolean>(false)
 const handleClearIcon = async () => {
   await toolkitApi.core.clearPluginIconCache()
   clearPluginIconCache()
-}
-const handleCheckUpdate = async () => {
-  toolkitApi.core.checkUpdateApp().finally(() => {
-    loadingDialog.close()
-  })
-  loadingDialog.show({
-    showCancel: true,
-    message: '正在检查更新',
-    onCancel: () => {
-      toolkitApi.core.cancelCheckUpdateApp()
-    },
-  })
 }
 </script>
 
@@ -81,7 +70,7 @@ const handleCheckUpdate = async () => {
       </SettingGroup>
       <SettingGroup name="更新设置">
         <SettingItem title="手动检查更新">
-          <el-button type="primary" @click="handleCheckUpdate">检查更新</el-button>
+          <el-button type="primary" @click="checkAppUpdate">检查更新</el-button>
         </SettingItem>
         <setting-item title="启动时自动更新">
           <el-switch v-model="appSettings.autoUpdateOnStartup" />

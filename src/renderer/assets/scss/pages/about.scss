@@ -89,4 +89,17 @@
     }
   }
 
+  &__update {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 4px 0 14px;
+  }
+
+  &__update-hint {
+    color: var(--el-text-color-secondary);
+    font-size: 13px;
+  }
+
 }

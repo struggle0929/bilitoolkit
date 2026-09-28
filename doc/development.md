@@ -30,25 +30,19 @@
 
 ### 安装依赖
 
-由于源码仓库中使用了 `workspace:^` 作为本地 workspace 依赖，直接安装依赖前需要先修改版本号（或者将其他项目放在一个 pnpm mono 项目里）。
-
-#### 修改 workspace 依赖
-
-检查各 `package.json`，将：
-
-```json
-"workspace:^"
-```
-
-修改为对应依赖包的**最新版本号**。
-
-#### 安装依赖
-
-执行：
+项目已将独立发布的模块依赖写为 npm 版本号。克隆仓库或下载源码 ZIP 后，不需要手动修改 `package.json` 和 `package-lock.json`。先安装符合 `package.json` 要求的 Node.js，并在项目根目录执行：
 
 ```bash
-npm i
-# 如果报错 请使用 npm i --legacy-peer-deps
+npm ci
+```
+
+如果只想在 Windows 上快速运行开发版，可以双击根目录的 `start-windows.cmd`；首次运行会打开安装进度窗口，执行依赖安装和下面的构建步骤。成功后写入 `.bilitoolkit-setup-complete` 标记，下次双击直接启动；若依赖损坏，可删除该标记后重新执行安装。普通用户请优先下载 [Releases 安装包](https://github.com/hzhilong/bilitoolkit/releases/latest)，无需开发环境。
+
+`ffmpeg-static` 安装时还会从 GitHub Releases 下载 Windows 二进制文件。`start-windows.cmd` 首次下载失败后会用 FFmpeg 镜像自动重试一次。手动安装时，若此步因网络超时失败，可在 **cmd** 中临时指定镜像后重试（仅影响当前命令窗口）：
+
+```cmd
+set FFMPEG_BINARIES_URL=https://cdn.npmmirror.com/binaries/ffmpeg-static
+npm ci
 ```
 
 ### 构建项目
@@ -70,6 +64,8 @@ npm run rebuild:native
 npm run dev
 ```
 
+开发版需要保持终端窗口打开。应用内的在线更新只适用于正式安装版；开发版请用 Git 更新源码并重新构建。
+
 ### 打包
 
 依次执行脚本：
@@ -80,6 +76,8 @@ npm run build
 # 执行应用打包
 npm run app:dist
 ```
+
+Windows 安装包和自动更新清单输出在 `release/版本号/`。发布新版本时须将 `.exe` 与 `latest.yml` 一同上传到对应的 GitHub Release。仓库的标签发布流程会在推送 `v版本号` 标签后自动完成 Windows 构建和上传；标签版本应与 `package.json` 的 `version` 一致。
 
 ## 插件开发
 

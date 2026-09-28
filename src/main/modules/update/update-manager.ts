@@ -1,7 +1,8 @@
 import { appEnv } from '@ybgnb/vite-env/common'
 import electronUpdater, { type UpdateDownloadedEvent } from 'electron-updater'
-import { dialog } from 'electron'
+import { app, dialog } from 'electron'
 import { getAppSettings } from '@/main/utils/host-app.js'
+import { mainLogger } from '@/main/common/main-logger.js'
 
 class AppUpdateManager {
   updateTask: null | Promise<void> = null
@@ -35,12 +36,24 @@ class AppUpdateManager {
         autoUpdater.quitAndInstall()
       }
     })
-    if (appEnv.PROD && getAppSettings().autoUpdateOnStartup) {
-      void this.checkUpdate()
+    if (appEnv.PROD && app.isPackaged && getAppSettings().autoUpdateOnStartup) {
+      void this.checkUpdate().catch((error: unknown) => {
+        mainLogger.error('自动检查更新失败', error)
+      })
     }
   }
 
   async checkUpdate() {
+    if (!app.isPackaged) {
+      await dialog.showMessageBox({
+        type: 'info',
+        buttons: ['确定'],
+        title: '开发版无法在线更新',
+        message: '在线更新仅适用于从 GitHub Releases 安装的正式版。开发版请更新源码后重新启动。',
+      })
+      return
+    }
+
     this.ignoreResult = false
     if (this.updateTask) {
       return this.updateTask

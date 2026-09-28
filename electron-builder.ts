@@ -23,6 +23,12 @@ export default (): Configuration => {
       // 输出目录（按版本号分级）
       output: `release/${packageJson.version}`,
     },
+    // 生成 app-update.yml；发布时同时上传安装包和 latest.yml。
+    publish: {
+      provider: 'github',
+      owner: 'hzhilong',
+      repo: 'bilitoolkit',
+    },
     // 需要包含在打包中的文件/目录
     files: [
       'dist', // 主进程和渲染进程构建文件
@@ -68,14 +74,6 @@ export default (): Configuration => {
       {
         from: 'LICENSE', // 许可证文件
         to: '.', // 输出到应用根目录
-      },
-    ],
-    // 需要打包到应用资源目录的额外资源
-    extraResources: [
-      {
-        from: 'node_modules/ffmpeg-static/bin',
-        to: 'ffmpeg-static/bin',
-        filter: ['**/*'],
       },
     ],
   }
