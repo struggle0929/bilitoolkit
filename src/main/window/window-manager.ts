@@ -17,6 +17,7 @@ import { AppError } from 'bilitoolkit-types'
 import { appUpdateManager } from '@/main/modules/update/update-manager.js'
 import { downloadManager } from '@/main/modules/download/download-manager.js'
 import { userManager } from '@/main/modules/user-manager.js'
+import { redactForLog, redactLogText } from '@/shared/utils/log-redact.js'
 
 type IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
@@ -107,11 +108,11 @@ export class WindowManager extends BaseWindowManager {
           throw e
         }
         if (e instanceof BiliApiBusinessError) {
-          mainLogger.error(`${logPrefix} 执行错误`, e.message, e.responseCode)
+          mainLogger.error(`${logPrefix} 执行错误`, redactLogText(e.message), e.responseCode)
         } else if (e instanceof AppError) {
-          mainLogger.error(`${logPrefix} 执行错误`, e.message)
+          mainLogger.error(`${logPrefix} 执行错误`, redactLogText(e.message))
         } else {
-          mainLogger.error(`${logPrefix} 执行错误`, e)
+          mainLogger.error(`${logPrefix} 执行错误`, redactForLog(e))
         }
         throw e
       }
@@ -138,7 +139,7 @@ function handleLogger(
     mainLogger.info(`${logPrefix} ${status}`)
     return
   }
-  const jsonData = util.inspect(data, { depth: null, colors: false })
+  const jsonData = util.inspect(redactForLog(data), { depth: null, colors: false, customInspect: false })
   const argSize = jsonData.length ?? 0
   if (argSize > 300) {
     // 参数过长时，不在控制台打印具体参数
